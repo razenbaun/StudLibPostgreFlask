@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Список книг</h1>
+<a href="{{ url_for('books.add_book') }}">Добавить книгу</a>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название книги</th>
+        <th>Издатель</th>
+        <th>Автор</th>
+        <th>Год издания</th>
+        <th>Количество страниц</th>
+        <th>Доступное количество</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for book in books %}
+    <tr>
+        <td>{{ book.book_id }}</td>
+        <td>{{ book.book_name }}</td>
+        <td>{{ book.publishing_house.publishing_house_name }}</td>
+        <td>{{ book.author.author_full_name }}</td>
+        <td>{{ book.year_of_publishing }}</td>
+        <td>{{ book.number_of_pages }}</td>
+        <td>{{ book.quantity_in_stock }}</td>
+        <td>
+            <a href="{{ url_for('books.edit_book', book_id=book.book_id) }}">Редактировать</a>
+            <form action="{{ url_for('books.delete_book', book_id=book.book_id) }}" method="POST"
+                  style="display:inline;">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

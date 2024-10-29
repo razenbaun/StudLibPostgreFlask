@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Список жанров</h1>
+<a href="{{ url_for('genre.add_genre') }}">Добавить жанр</a>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Жанр</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for genre in genres %}
+        <tr>
+            <td>{{ genre.genre_id }}</td>
+            <td>{{ genre.genre }}</td>
+            <td>
+                <a href="{{ url_for('genre.edit_genre', genre_id=genre.genre_id) }}">Редактировать</a>
+                <form action="{{ url_for('genre.delete_genre', genre_id=genre.genre_id) }}" method="POST" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library System</title>
+</head>
+<body>
+<header>
+    <h1>Library System</h1>
+    <nav>
+        <a href="/">Главная</a>
+        <a href="{{ url_for('books.get_books') }}">Книги</a>
+        <a href="{{ url_for('clients.get_clients') }}">Клиенты</a>
+        <a href="{{ url_for('authors.get_authors') }}">Авторы</a>
+        <a href="{{ url_for('genre.get_genres') }}">Жанры</a>
+        <a href="{{ url_for('agreement.get_agreements') }}">Соглашения</a>
+        <a href="{{ url_for('reservation.get_reservations') }}">Резервирования</a>
+        <a href="{{ url_for('publishing_houses.list_publishing_houses') }}">Издательства</a>
+    </nav>
+</header>
+<main>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

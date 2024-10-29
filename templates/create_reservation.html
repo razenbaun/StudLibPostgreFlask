@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Создать новое резервирование</h2>
+<form action="{{ url_for('reservation.create_reservation') }}" method="post">
+    <label for="book_id">Книга:</label>
+    <select name="book_id">
+        {% for book in books %}
+        <option value="{{ book.book_id }}">{{ book.book_name }}</option>
+        {% endfor %}
+    </select>
+    
+    <label for="client_id">Клиент:</label>
+    <select name="client_id">
+        {% for client in clients %}
+        <option value="{{ client.client_id }}">{{ client.library_card_number }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="start_date">Дата начала:</label>
+    <input type="date" name="start_date" required>
+    
+    <label for="end_date">Дата окончания:</label>
+    <input type="date" name="end_date">
+
+    <button type="submit">Создать резервирование</button>
+</form>
+<a href="{{ url_for('reservation.get_reservations') }}">Назад к резервированиям</a>
+{% endblock %}

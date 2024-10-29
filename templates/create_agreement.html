@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Создание нового соглашения</h2>
+<form method="POST">
+    <label for="book_id">Выберите книгу:</label>
+    <select name="book_id" required>
+        {% for book in books %}
+        <option value="{{ book.book_id }}">{{ book.book_name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="client_id">Выберите клиента:</label>
+    <select name="client_id" required>
+        {% for client in clients %}
+        <option value="{{ client.client_id }}">{{ client.library_card_number }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Создать соглашение</button>
+</form>
+{% endblock %}

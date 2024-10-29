@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Издательства</h2>
+<a href="{{ url_for('publishing_houses.new_publishing_house') }}">Добавить Издательство</a>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Contact Information</th>
+        <th>Actions</th>
+    </tr>
+    {% for house in publishing_houses %}
+    <tr>
+        <td>{{ house.publishing_house_id }}</td>
+        <td>{{ house.publishing_house_name }}</td>
+        <td>{{ house.contact_information }}</td>
+        <td>
+            <form action="{{ url_for('publishing_houses.delete_publishing_house', house_id=house.publishing_house_id) }}" method="POST">
+                <button type="submit">Удалить</button>
+            </form>
+            <a href="{{ url_for('publishing_houses.edit_publishing_house', house_id=house.publishing_house_id) }}">Изменить</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Редактировать жанр</h1>
+<form method="POST">
+    <label for="genre">Название жанра:</label>
+    <input type="text" id="genre" name="genre" value="{{ genre.genre }}" required>
+    <br>
+    <button type="submit">Сохранить изменения</button>
+</form>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Edit Publishing House</h2>
+<form action="{{ url_for('publishing_houses.update_publishing_house', house_id=house.publishing_house_id) }}" method="POST">
+    <label for="publishing_house_name">Publishing House Name:</label>
+    <input type="text" id="publishing_house_name" name="publishing_house_name" value="{{ house.publishing_house_name }}" required>
+
+    <label for="contact_information">Contact Information:</label>
+    <input type="text" id="contact_information" name="contact_information" value="{{ house.contact_information }}">
+
+    <button type="submit">Update</button>
+</form>
+{% endblock %}
