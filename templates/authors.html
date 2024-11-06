@@ -1,67 +1,77 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Авторы</h1>
+<div class="container">
+    <h1 class="mt-4">Авторы</h1>
 
-<form action="{{ url_for('authors.get_authors') }}" method="get">
-    <input type="text" name="search" placeholder="Поиск по имени..." value="{{ search_query }}">
-    <button type="submit">Поиск</button>
-</form>
+    <form action="{{ url_for('authors.get_authors') }}" method="get" class="form-inline mb-4">
+        <input type="text" name="search" placeholder="Поиск по имени..." value="{{ search_query }}"
+               class="form-control mr-2"/>
+        <button type="submit" class="btn btn-primary">Поиск</button>
+    </form>
 
-<a href="{{ url_for('authors.add_author') }}">Добавить автора</a>
+    <a href="{{ url_for('authors.add_author') }}" class="btn btn-success mb-3">Добавить автора</a>
 
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Полное имя</th>
-        <th>Дата рождения</th>
-        <th>Действия</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for author in pagination.items %}
-    <tr>
-        <td>{{ author.author_id }}</td>
-        <td>{{ author.author_full_name }}</td>
-        <td>{{ author.date_of_birth }}</td>
-        <td>
-            <form action="{{ url_for('authors.delete_author', author_id=author.author_id) }}" method="post"
-                  style="display:inline;">
-                <button type="submit" onclick="return confirm('Удалить этого автора?');">Удалить</button>
-            </form>
-            <a href="{{ url_for('authors.edit_author', author_id=author.author_id) }}">Редактировать</a>
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-<div>
-    {% if pagination.pages > 1 %}
-    <ul style="list-style-type: none; display: flex; gap: 10px;">
-        {% if pagination.has_prev %}
-        <li><a href="{{ url_for('authors.get_authors', page=pagination.prev_num, search=search_query) }}">Назад</a></li>
-        {% endif %}
-
-        {% for page_num in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
-        {% if page_num %}
-        {% if page_num == pagination.page %}
-        <li><strong>{{ page_num }}</strong></li>
-        {% else %}
-        <li><a href="{{ url_for('authors.get_authors', page=page_num, search=search_query) }}">{{ page_num }}</a></li>
-        {% endif %}
-        {% else %}
-        <li>…</li>
-        {% endif %}
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Полное имя</th>
+            <th>Дата рождения</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for author in pagination.items %}
+        <tr>
+            <td>{{ author.author_id }}</td>
+            <td>{{ author.author_full_name }}</td>
+            <td>{{ author.date_of_birth }}</td>
+            <td>
+                <form action="{{ url_for('authors.delete_author', author_id=author.author_id) }}" method="post"
+                      style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Удалить этого автора?');">Удалить
+                    </button>
+                </form>
+                <a href="{{ url_for('authors.edit_author', author_id=author.author_id) }}"
+                   class="btn btn-warning btn-sm">Редактировать</a>
+            </td>
+        </tr>
         {% endfor %}
+        </tbody>
+    </table>
 
-        {% if pagination.has_next %}
-        <li><a href="{{ url_for('authors.get_authors', page=pagination.next_num, search=search_query) }}">Вперед</a>
-        </li>
+    <div>
+        {% if pagination.pages > 1 %}
+        <ul class="pagination">
+            {% if pagination.has_prev %}
+            <li class="page-item"><a class="page-link"
+                                     href="{{ url_for('authors.get_authors', page=pagination.prev_num, search=search_query) }}">Назад</a>
+            </li>
+            {% endif %}
+
+            {% for page_num in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+            {% if page_num %}
+            {% if page_num == pagination.page %}
+            <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link"
+                                     href="{{ url_for('authors.get_authors', page=page_num, search=search_query) }}">{{
+                page_num }}</a></li>
+            {% endif %}
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if pagination.has_next %}
+            <li class="page-item"><a class="page-link"
+                                     href="{{ url_for('authors.get_authors', page=pagination.next_num, search=search_query) }}">Вперед</a>
+            </li>
+            {% endif %}
+        </ul>
         {% endif %}
-    </ul>
-    {% endif %}
+    </div>
 </div>
-
 {% endblock %}

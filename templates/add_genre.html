@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Добавить жанр</h1>
-<form method="POST">
-    <label for="genre">Название жанра:</label>
-    <input type="text" id="genre" name="genre" required>
-    <br>
-    <button type="submit">Добавить</button>
-</form>
+<div class="container mt-4">
+    <h1>Добавить жанр</h1>
+    <form method="POST" class="mt-3">
+        <div class="form-group">
+            <label for="genre">Название жанра:</label>
+            <input type="text" id="genre" name="genre" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+</div>
 {% endblock %}

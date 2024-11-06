@@ -1,22 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Создание нового соглашения</h2>
-<form method="POST">
-    <label for="book_id">Выберите книгу:</label>
-    <select name="book_id" required>
-        {% for book in books %}
-        <option value="{{ book.book_id }}">{{ book.book_name }}</option>
-        {% endfor %}
-    </select>
+<div class="container">
+    <h2 class="mt-4">Создание нового соглашения</h2>
+    <form method="POST" class="mt-3">
+        <div class="form-group">
+            <label for="book_id">Выберите книгу:</label>
+            <select name="book_id" class="form-control" required>
+                {% for book in books %}
+                <option value="{{ book.book_id }}">{{ book.book_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <label for="client_id">Выберите клиента:</label>
-    <select name="client_id" required>
-        {% for client in clients %}
-        <option value="{{ client.client_id }}">{{ client.library_card_number }}</option>
-        {% endfor %}
-    </select>
+        <div class="form-group">
+            <label for="client_id">Выберите клиента:</label>
+            <select name="client_id" class="form-control" required>
+                {% for client in clients %}
+                <option value="{{ client.client_id }}">{{ client.library_card_number }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <button type="submit">Создать соглашение</button>
-</form>
+        <button type="submit" class="btn btn-primary">Создать соглашение</button>
+    </form>
+</div>
 {% endblock %}
