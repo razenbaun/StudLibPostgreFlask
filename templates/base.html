@@ -5,50 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library System</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .content {
+            flex-grow: 1;
+        }
+
+    </style>
 </head>
 <body>
-<header class="bg-primary text-white p-3">
-    <div class="container">
-        <h1>Library System</h1>
-        <nav>
-            <ul class="nav">
-                <li class="nav-item"><a class="nav-link text-white" href="/">Главная</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('books.get_books') }}">Книги</a>
-                </li>
-                <li class="nav-item"><a class="nav-link text-white"
-                                        href="{{ url_for('clients.get_clients') }}">Клиенты</a></li>
-                <li class="nav-item"><a class="nav-link text-white"
-                                        href="{{ url_for('authors.get_authors') }}">Авторы</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('genre.get_genres') }}">Жанры</a>
-                </li>
-                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('agreement.get_agreements') }}">Соглашения</a>
-                </li>
-                <li class="nav-item"><a class="nav-link text-white"
-                                        href="{{ url_for('reservation.get_reservations') }}">Резервирования</a></li>
-                <li class="nav-item"><a class="nav-link text-white"
-                                        href="{{ url_for('publishing_houses.get_publishing_houses') }}">Издательства</a>
-                </li>
+<div class="wrapper">
+    <header class="bg-dark text-white p-3">
+        <div class="container">
+            <h1>Library System</h1>
+            <nav>
+                <ul class="nav">
+                    <li class="nav-item"><a class="nav-link text-white" href="/">Главная</a></li>
+                    <li class="nav-item"><a class="nav-link text-white"
+                                            href="{{ url_for('books.get_books') }}">Книги</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('clients.get_clients') }}">Клиенты</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('authors.get_authors') }}">Авторы</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link text-white"
+                                            href="{{ url_for('genre.get_genres') }}">Жанры</a></li>
+                    <li class="nav-item"><a class="nav-link text-white"
+                                            href="{{ url_for('agreement.get_agreements') }}">Соглашения</a></li>
+                    <li class="nav-item"><a class="nav-link text-white"
+                                            href="{{ url_for('reservation.get_reservations') }}">Резервирования</a></li>
+                    <li class="nav-item"><a class="nav-link text-white"
+                                            href="{{ url_for('publishing_houses.get_publishing_houses') }}">Издательства</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content container mt-4">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-info">
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
             </ul>
-        </nav>
-    </div>
-</header>
-<main class="container mt-4">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="alert alert-info">
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-</main>
-<footer class="bg-light text-center py-3">
-    <p>&copy; 2024</p>
-</footer>
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2024</p>
+    </footer>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>

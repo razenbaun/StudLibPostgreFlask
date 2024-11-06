@@ -12,10 +12,14 @@ def get_books():
     sort_by = request.args.get('sort_by', 'book_name')
     sort_order = request.args.get('sort_order', 'asc')
 
+    # Начинаем строить запрос
     query = Book.query
+
+    # Применяем фильтрацию по поисковому запросу
     if search_query:
         query = query.filter(Book.book_name.ilike(f"%{search_query}%"))
 
+    # Применяем сортировку по выбранному столбцу и порядку
     if sort_by == 'book_name':
         query = query.order_by(asc(Book.book_name) if sort_order == 'asc' else desc(Book.book_name))
     elif sort_by == 'author':
@@ -32,7 +36,7 @@ def get_books():
     elif sort_by == 'quantity_in_stock':
         query = query.order_by(asc(Book.quantity_in_stock) if sort_order == 'asc' else desc(Book.quantity_in_stock))
 
-    per_page = 10
+    per_page = 5
     pagination = query.paginate(page=page, per_page=per_page)
 
     return render_template('books.html', pagination=pagination, search_query=search_query, sort_by=sort_by,

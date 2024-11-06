@@ -7,10 +7,7 @@
     <form action="{{ url_for('books.get_books') }}" method="get" class="form-inline mb-4">
         <input type="text" name="search" placeholder="Поиск по названию книги" value="{{ search_query }}"
                class="form-control mr-2"/>
-        <button type="submit" class="btn btn-primary">Поиск</button>
-    </form>
 
-    <form action="{{ url_for('books.get_books') }}" method="get" class="mb-4">
         <label for="sort_by" class="mr-2">Сортировать по:</label>
         <select name="sort_by" class="form-control d-inline-block mr-2">
             <option value="book_name" {% if sort_by==
@@ -35,9 +32,10 @@
             'desc' %}selected{% endif %}>По убыванию</option>
         </select>
 
-        <button type="submit" class="btn btn-secondary mt-3">Применить сортировку</button>
+        <button type="submit" class="btn btn-primary">Применить фильтр</button>
     </form>
 
+    <!-- Таблица с книгами -->
     <table class="table table-striped">
         <thead class="thead-dark">
         <tr>
@@ -75,6 +73,7 @@
         </tbody>
     </table>
 
+    <!-- Пагинация -->
     <div>
         {% if pagination.pages > 1 %}
         <ul class="pagination">
