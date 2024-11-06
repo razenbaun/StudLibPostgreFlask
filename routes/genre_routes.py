@@ -6,8 +6,20 @@ genre_bp = Blueprint('genre', __name__)
 
 @genre_bp.route('/genres', methods=['GET'])
 def get_genres():
-    genres = Genre.query.all()
-    return render_template('genres.html', genres=genres)
+    search_query = request.args.get('search', '')
+    page = request.args.get('page', 1, type=int)
+
+    query = Genre.query
+
+    if search_query:
+        query = query.filter(Genre.genre.ilike(f"%{search_query}%"))
+
+    per_page = 5
+    pagination = query.paginate(page=page, per_page=per_page)
+
+    return render_template('genres.html',
+                           pagination=pagination,
+                           search_query=search_query)
 
 
 @genre_bp.route('/genres/add', methods=['GET', 'POST'])

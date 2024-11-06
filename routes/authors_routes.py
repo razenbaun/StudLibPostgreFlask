@@ -4,14 +4,24 @@ from model.model import db, Author
 authors_bp = Blueprint('authors', __name__)
 
 
-# Отображение всех авторов
 @authors_bp.route('/authors', methods=['GET'])
 def get_authors():
-    authors = Author.query.all()
-    return render_template('authors.html', authors=authors)
+    search_query = request.args.get('search', '')
+    page = request.args.get('page', 1, type=int)
+
+    query = Author.query
+
+    if search_query:
+        query = query.filter(Author.author_full_name.ilike(f"%{search_query}%"))
+
+    per_page = 5
+    pagination = query.paginate(page=page, per_page=per_page)
+
+    return render_template('authors.html',
+                           pagination=pagination,
+                           search_query=search_query)
 
 
-# Добавление нового автора
 @authors_bp.route('/authors/add', methods=['GET', 'POST'])
 def add_author():
     if request.method == 'POST':
@@ -27,7 +37,6 @@ def add_author():
     return render_template('add_author.html')
 
 
-# Удаление автора
 @authors_bp.route('/authors/delete/<int:author_id>', methods=['POST'])
 def delete_author(author_id):
     author = Author.query.get(author_id)
@@ -40,7 +49,6 @@ def delete_author(author_id):
     return redirect(url_for('authors.get_authors'))
 
 
-# Изменение данных автора
 @authors_bp.route('/authors/edit/<int:author_id>', methods=['GET', 'POST'])
 def edit_author(author_id):
     author = Author.query.get(author_id)

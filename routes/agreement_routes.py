@@ -4,11 +4,22 @@ from datetime import date
 
 agreement_bp = Blueprint('agreement', __name__)
 
-
 @agreement_bp.route('/agreements', methods=['GET'])
 def get_agreements():
-    agreements = Agreement.query.all()
-    return render_template('agreements.html', agreements=agreements)
+    search_query = request.args.get('search', '')
+    page = request.args.get('page', 1, type=int)
+
+    query = Agreement.query
+    if search_query:
+        query = query.join(Book).join(Client).filter(
+            Book.book_name.ilike(f"%{search_query}%") |
+            Client.library_card_number.ilike(f"%{search_query}%")
+        )
+
+    per_page = 5
+    pagination = query.paginate(page=page, per_page=per_page)
+
+    return render_template('agreements.html', pagination=pagination, search_query=search_query)
 
 
 @agreement_bp.route('/agreements/create', methods=['GET', 'POST'])

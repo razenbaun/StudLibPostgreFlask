@@ -3,6 +3,7 @@ from model.model import db
 
 
 def create_app():
+
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_user:446977@localhost/lib'
     app.secret_key = 'secret_key_here'

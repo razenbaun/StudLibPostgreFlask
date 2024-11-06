@@ -6,8 +6,20 @@ clients_bp = Blueprint('clients', __name__)
 
 @clients_bp.route('/clients', methods=['GET'])
 def get_clients():
-    clients = Client.query.all()
-    return render_template('clients.html', clients=clients)
+    search_query = request.args.get('search', '')
+    page = request.args.get('page', 1, type=int)
+
+    query = Client.query
+    if search_query:
+        query = query.filter(
+            (Client.client_full_name.ilike(f"%{search_query}%")) |
+            (Client.library_card_number.ilike(f"%{search_query}%"))
+        )
+
+    per_page = 5
+    pagination = query.paginate(page=page, per_page=per_page)
+
+    return render_template('clients.html', pagination=pagination, search_query=search_query)
 
 
 @clients_bp.route('/clients/add', methods=['GET', 'POST'])
@@ -31,8 +43,8 @@ def add_client():
             db.session.commit()
             flash('Клиент успешно добавлен!', 'success')
         except Exception as e:
-            db.session.rollback()  # Откат транзакции в случае ошибки
-            flash('Ошибка при добавлении клиента: {}'.format(str(e)), 'danger')
+            db.session.rollback()
+            flash(f'Ошибка при добавлении клиента: {str(e)}', 'danger')
 
         return redirect(url_for('clients.get_clients'))
 

@@ -2,39 +2,90 @@
 
 {% block content %}
 <h1>Список книг</h1>
-<a href="{{ url_for('books.add_book') }}">Добавить книгу</a>
+
+<form action="{{ url_for('books.get_books') }}" method="get">
+    <input type="text" name="search" placeholder="Поиск по названию книги" value="{{ search_query }}">
+    <button type="submit">Поиск</button>
+</form>
+
+<form action="{{ url_for('books.get_books') }}" method="get">
+    <label for="sort_by">Сортировать по:</label>
+    <select name="sort_by">
+        <option value="book_name" {% if sort_by == 'book_name' %}selected{% endif %}>Название книги</option>
+        <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Автор</option>
+        <option value="publishing_house" {% if sort_by == 'publishing_house' %}selected{% endif %}>Издатель</option>
+        <option value="year_of_publishing" {% if sort_by == 'year_of_publishing' %}selected{% endif %}>Год издания</option>
+        <option value="number_of_pages" {% if sort_by == 'number_of_pages' %}selected{% endif %}>Количество страниц</option>
+        <option value="quantity_in_stock" {% if sort_by == 'quantity_in_stock' %}selected{% endif %}>Доступное количество</option>
+    </select>
+
+    <label for="sort_order">Порядок:</label>
+    <select name="sort_order">
+        <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>По возрастанию</option>
+        <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>По убыванию</option>
+    </select>
+
+    <button type="submit">Применить сортировку</button>
+</form>
+
 <table>
     <thead>
-    <tr>
-        <th>ID</th>
-        <th>Название книги</th>
-        <th>Издатель</th>
-        <th>Автор</th>
-        <th>Год издания</th>
-        <th>Количество страниц</th>
-        <th>Доступное количество</th>
-        <th>Действия</th>
-    </tr>
+        <tr>
+            <th>ID</th>
+            <th>Название книги</th>
+            <th>Издатель</th>
+            <th>Автор</th>
+            <th>Год издания</th>
+            <th>Количество страниц</th>
+            <th>Доступное количество</th>
+            <th>Действия</th>
+        </tr>
     </thead>
     <tbody>
-    {% for book in books %}
-    <tr>
-        <td>{{ book.book_id }}</td>
-        <td>{{ book.book_name }}</td>
-        <td>{{ book.publishing_house.publishing_house_name }}</td>
-        <td>{{ book.author.author_full_name }}</td>
-        <td>{{ book.year_of_publishing }}</td>
-        <td>{{ book.number_of_pages }}</td>
-        <td>{{ book.quantity_in_stock }}</td>
-        <td>
-            <a href="{{ url_for('books.edit_book', book_id=book.book_id) }}">Редактировать</a>
-            <form action="{{ url_for('books.delete_book', book_id=book.book_id) }}" method="POST"
-                  style="display:inline;">
-                <button type="submit">Удалить</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
+        {% for book in pagination.items %}
+        <tr>
+            <td>{{ book.book_id }}</td>
+            <td>{{ book.book_name }}</td>
+            <td>{{ book.publishing_house.publishing_house_name }}</td>
+            <td>{{ book.author.author_full_name }}</td>
+            <td>{{ book.year_of_publishing }}</td>
+            <td>{{ book.number_of_pages }}</td>
+            <td>{{ book.quantity_in_stock }}</td>
+            <td>
+                <a href="{{ url_for('books.edit_book', book_id=book.book_id) }}">Редактировать</a>
+                <form action="{{ url_for('books.delete_book', book_id=book.book_id) }}" method="POST" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
+
+<div>
+    {% if pagination.pages > 1 %}
+        <ul style="list-style-type: none; display: flex; gap: 10px;">
+            {% if pagination.has_prev %}
+                <li><a href="{{ url_for('books.get_books', page=pagination.prev_num, search=search_query, sort_by=sort_by, sort_order=sort_order) }}">Назад</a></li>
+            {% endif %}
+
+            {% for page_num in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == pagination.page %}
+                        <li><strong>{{ page_num }}</strong></li>
+                    {% else %}
+                        <li><a href="{{ url_for('books.get_books', page=page_num, search=search_query, sort_by=sort_by, sort_order=sort_order) }}">{{ page_num }}</a></li>
+                    {% endif %}
+                {% else %}
+                    <li>…</li>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.has_next %}
+                <li><a href="{{ url_for('books.get_books', page=pagination.next_num, search=search_query, sort_by=sort_by, sort_order=sort_order) }}">Вперед</a></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+</div>
+
 {% endblock %}

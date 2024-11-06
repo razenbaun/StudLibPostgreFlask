@@ -4,11 +4,22 @@ from model.model import db, PublishingHouse
 publishing_houses_bp = Blueprint('publishing_houses', __name__)
 
 
-# Отображение всех издательств
 @publishing_houses_bp.route('/publishing_houses', methods=['GET'])
-def list_publishing_houses():
-    publishing_houses = PublishingHouse.query.all()
-    return render_template('publishing_houses.html', publishing_houses=publishing_houses)
+def get_publishing_houses():
+    search_query = request.args.get('search', '')
+    page = request.args.get('page', 1, type=int)
+
+    query = PublishingHouse.query
+
+    if search_query:
+        query = query.filter(PublishingHouse.publishing_house_name.ilike(f"%{search_query}%"))
+
+    per_page = 5
+    pagination = query.paginate(page=page, per_page=per_page)
+
+    return render_template('publishing_houses.html',
+                           pagination=pagination,
+                           search_query=search_query)
 
 
 # Форма для добавления нового издательства
@@ -35,7 +46,7 @@ def add_publishing_house():
     db.session.commit()
 
     flash("Publishing House added successfully!")
-    return redirect(url_for('publishing_houses.list_publishing_houses'))
+    return redirect(url_for('publishing_houses.get_publishing_houses'))
 
 
 # Удаление издательства
@@ -45,7 +56,7 @@ def delete_publishing_house(house_id):
     db.session.delete(house)
     db.session.commit()
     flash("Publishing House deleted successfully!")
-    return redirect(url_for('publishing_houses.list_publishing_houses'))
+    return redirect(url_for('publishing_houses.get_publishing_houses'))
 
 
 # Форма для редактирования издательства
@@ -64,4 +75,4 @@ def update_publishing_house(house_id):
 
     db.session.commit()
     flash("Publishing House updated successfully!")
-    return redirect(url_for('publishing_houses.list_publishing_houses'))
+    return redirect(url_for('publishing_houses.get_publishing_houses'))
