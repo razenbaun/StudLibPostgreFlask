@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from model.model import db, Reservation, Book, Client, Agreement
 from datetime import datetime
 
@@ -59,6 +59,10 @@ def create_reservation():
 
 @reservation_bp.route('/reservations/cancel/<int:reservation_id>', methods=['POST'])
 def cancel_reservation(reservation_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для отмены резервирования!", "danger")
+        return redirect(url_for('reservation.get_reservations'))
+
     reservation = Reservation.query.get(reservation_id)
 
     if reservation:
@@ -78,6 +82,10 @@ def cancel_reservation(reservation_id):
 
 @reservation_bp.route('/reservations/close/<int:reservation_id>', methods=['POST'])
 def close_reservation(reservation_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для закрытия резервирования!", "danger")
+        return redirect(url_for('reservation.get_reservations'))
+
     reservation = Reservation.query.get_or_404(reservation_id)
 
     new_agreement = Agreement(

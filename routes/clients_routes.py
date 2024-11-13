@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from model.model import Client, db
 
 clients_bp = Blueprint('clients', __name__)
@@ -53,6 +53,10 @@ def add_client():
 
 @clients_bp.route('/clients/edit/<int:client_id>', methods=['GET', 'POST'])
 def edit_client(client_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для изменения клиентов!", "danger")
+        return redirect(url_for('clients.get_clients'))
+
     client = Client.query.get_or_404(client_id)
     if request.method == 'POST':
         client.library_card_number = request.form['library_card_number']
@@ -70,6 +74,10 @@ def edit_client(client_id):
 
 @clients_bp.route('/clients/delete/<int:client_id>', methods=['POST'])
 def delete_client(client_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для удаления клиентов!", "danger")
+        return redirect(url_for('clients.get_clients'))
+
     client = Client.query.get_or_404(client_id)
     db.session.delete(client)
     db.session.commit()

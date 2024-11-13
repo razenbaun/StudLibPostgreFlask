@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Вход</h1>
+    <form action="{{ url_for('auth.login') }}" method="post">
+        <input type="text" name="username" placeholder="Имя пользователя" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <button type="submit">Войти</button>
+    </form>
+    <p class="text-danger">{{ get_flashed_messages() }}</p>
+</div>
+{% endblock %}

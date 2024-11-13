@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from model.model import Agreement, Book, Client, db
 from datetime import date
 
 agreement_bp = Blueprint('agreement', __name__)
+
 
 @agreement_bp.route('/agreements', methods=['GET'])
 def get_agreements():
@@ -53,6 +54,10 @@ def create_agreement():
 
 @agreement_bp.route('/agreements/close/<int:agreement_id>', methods=['POST'])
 def close_agreement(agreement_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для закрытия соглашений!", "danger")
+        return redirect(url_for('agreement.get_agreements'))
+
     agreement = Agreement.query.get_or_404(agreement_id)
     agreement.return_date = date.today()
 
@@ -66,6 +71,10 @@ def close_agreement(agreement_id):
 
 @agreement_bp.route('/agreements/delete/<int:agreement_id>', methods=['POST'])
 def delete_agreement(agreement_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для удаления соглашений!", "danger")
+        return redirect(url_for('agreement.get_agreements'))
+
     agreement = Agreement.query.get_or_404(agreement_id)
     db.session.delete(agreement)
     db.session.commit()

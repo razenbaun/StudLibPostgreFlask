@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from model.model import Genre, db
 
 genre_bp = Blueprint('genre', __name__)
@@ -37,6 +37,10 @@ def add_genre():
 
 @genre_bp.route('/genres/edit/<int:genre_id>', methods=['GET', 'POST'])
 def edit_genre(genre_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для изменения жанров!", "danger")
+        return redirect(url_for('genre.get_genres'))
+
     genre = Genre.query.get_or_404(genre_id)
 
     if request.method == 'POST':
@@ -50,6 +54,9 @@ def edit_genre(genre_id):
 
 @genre_bp.route('/genres/delete/<int:genre_id>', methods=['POST'])
 def delete_genre(genre_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для удаления жанров!", "danger")
+        return redirect(url_for('genre.get_genres'))
     genre = Genre.query.get_or_404(genre_id)
     db.session.delete(genre)
     db.session.commit()

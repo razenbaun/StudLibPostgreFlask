@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from model.model import Book, PublishingHouse, Author, db, Genre
 from sqlalchemy import asc, desc
 
@@ -12,14 +12,11 @@ def get_books():
     sort_by = request.args.get('sort_by', 'book_name')
     sort_order = request.args.get('sort_order', 'asc')
 
-    # Начинаем строить запрос
     query = Book.query
 
-    # Применяем фильтрацию по поисковому запросу
     if search_query:
         query = query.filter(Book.book_name.ilike(f"%{search_query}%"))
 
-    # Применяем сортировку по выбранному столбцу и порядку
     if sort_by == 'book_name':
         query = query.order_by(asc(Book.book_name) if sort_order == 'asc' else desc(Book.book_name))
     elif sort_by == 'author':
@@ -78,6 +75,10 @@ def add_book():
 
 @books_bp.route('/books/edit/<int:book_id>', methods=['GET', 'POST'])
 def edit_book(book_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для изменения книг!", "danger")
+        return redirect(url_for('books.get_books'))
+
     book = Book.query.get_or_404(book_id)
 
     if request.method == 'POST':
@@ -103,6 +104,10 @@ def edit_book(book_id):
 
 @books_bp.route('/books/delete/<int:book_id>', methods=['POST'])
 def delete_book(book_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для удаления книг!", "danger")
+        return redirect(url_for('books.get_books'))
+
     book = Book.query.get_or_404(book_id)
     db.session.delete(book)
     db.session.commit()

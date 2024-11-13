@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from model.model import db, PublishingHouse
 
 publishing_houses_bp = Blueprint('publishing_houses', __name__)
@@ -49,6 +49,10 @@ def add_publishing_house():
 
 @publishing_houses_bp.route('/publishing_houses/delete/<int:house_id>', methods=['POST'])
 def delete_publishing_house(house_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для удаления издательства!")
+        return redirect(url_for('publishing_houses.get_publishing_houses'))
+
     house = PublishingHouse.query.get_or_404(house_id)
     db.session.delete(house)
     db.session.commit()
@@ -58,6 +62,10 @@ def delete_publishing_house(house_id):
 
 @publishing_houses_bp.route('/publishing_houses/edit/<int:house_id>', methods=['GET'])
 def edit_publishing_house(house_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для редактирования издательства!")
+        return redirect(url_for('publishing_houses.get_publishing_houses'))
+
     house = PublishingHouse.query.get_or_404(house_id)
     return render_template('edit_publishing_house.html', house=house)
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from model.model import db, Author
 
 authors_bp = Blueprint('authors', __name__)
@@ -39,6 +39,9 @@ def add_author():
 
 @authors_bp.route('/authors/delete/<int:author_id>', methods=['POST'])
 def delete_author(author_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для удаления авторов!", "danger")
+        return redirect(url_for('authors.get_authors'))
     author = Author.query.get(author_id)
     if author:
         db.session.delete(author)
@@ -51,6 +54,10 @@ def delete_author(author_id):
 
 @authors_bp.route('/authors/edit/<int:author_id>', methods=['GET', 'POST'])
 def edit_author(author_id):
+    if session.get('user') != 'admin':
+        flash("У вас нет прав для изменения данных авторов!", "danger")
+        return redirect(url_for('authors.get_authors'))
+
     author = Author.query.get(author_id)
     if request.method == 'POST':
         author.author_full_name = request.form.get('author_full_name')

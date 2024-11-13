@@ -3,7 +3,6 @@ from model.model import db
 
 
 def create_app():
-
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_user:446977@localhost/lib'
     app.secret_key = 'secret_key_here'
@@ -30,6 +29,8 @@ def create_app():
     app.register_blueprint(agreement_bp)
     from routes.reservation_routes import reservation_bp
     app.register_blueprint(reservation_bp)
+    from routes.auth_routes import auth_bp
+    app.register_blueprint(auth_bp)
 
     return app
 
