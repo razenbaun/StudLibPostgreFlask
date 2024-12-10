@@ -9,11 +9,11 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        if username == 'admin' and password == 'admin_password':
+        if username == 'admin' and password == '1111':
             session['user'] = 'admin'
             flash('Logged in as admin')
             return redirect('/')
-        elif username == 'user' and password == 'user_password':
+        elif username == 'user' and password == '1111':
             session['user'] = 'user'
             flash('Logged in as user')
             return redirect('/')
